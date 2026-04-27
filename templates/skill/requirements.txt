@@ -1,0 +1,3 @@
+cloudpss>=4.5.28
+# Example shared private package pinned to an immutable Git ref:
+# cloudpss-psa-core @ git+https://github.com/your-org/cloudpss-psa-core.git@v0.3.1

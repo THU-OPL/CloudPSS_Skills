@@ -1,0 +1,16 @@
+{
+  "skill_name": "emt-fault-study",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "对 IEEE3 EMT 模型执行基线、延迟切除和轻故障三组故障研究。",
+      "expected_output": "返回每组工况的故障与恢复指标比较。",
+      "files": [],
+      "expectations": [
+        "能够执行 EMT 仿真",
+        "能够提取目标波形",
+        "能够输出恢复指标比较"
+      ]
+    }
+  ]
+}

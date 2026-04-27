@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "name": "cloudpss-agent-skills",
+  "title": "CloudPSS Agent Skills",
+  "description": "CloudPSS team skill marketplace and governance repository.",
+  "default_visibility": "internal",
+  "catalog_path": "catalog/skills-index.json"
+}

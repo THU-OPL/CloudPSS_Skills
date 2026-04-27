@@ -1,0 +1,15 @@
+{
+  "skill_name": "model-fetch-and-branch",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "获取 IEEE39 模型并创建一个本地研究副本。",
+      "expected_output": "返回模型摘要和本地工作副本路径。",
+      "files": [],
+      "expectations": [
+        "能够加载模型",
+        "能够导出本地工作副本"
+      ]
+    }
+  ]
+}

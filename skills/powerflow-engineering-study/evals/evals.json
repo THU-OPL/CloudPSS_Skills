@@ -1,0 +1,16 @@
+{
+  "skill_name": "powerflow-engineering-study",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "对 IEEE39 执行线路切除和电压控制场景比较。",
+      "expected_output": "返回基准与调整后潮流的结构化比较摘要。",
+      "files": [],
+      "expectations": [
+        "能够执行基准潮流",
+        "能够执行修改后的潮流",
+        "能够输出结构化比较结果"
+      ]
+    }
+  ]
+}
