@@ -1,0 +1,39 @@
+name: Skill Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate-and-govern:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install repo dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Validate changed skill
+        run: python -m src.cloudpss_skillrepo validate-skill skills/emt-simulation-workflow
+
+      - name: Run repository release check
+        run: python -m src.cloudpss_skillrepo release-check
+
+      - name: Reject sensitive or generated files
+        run: |
+          test ! -f skills/emt-simulation-workflow/.env
+          test ! -f .cloudpss_token
+          test ! -d skills/emt-simulation-workflow/artifacts
+          test ! -d skills/emt-simulation-workflow/mylib/__pycache__
+
+  
