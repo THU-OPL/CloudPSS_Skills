@@ -1,0 +1,27 @@
+{
+  "skill_name": "emt-simulation-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "加载一个 EMT-ready 模型，检查 EMT topology，然后运行 EMT 仿真并返回 plot 与 channel 摘要。",
+      "expected_output": "返回模型信息、topology 摘要、任务状态、plot 分组数量和 channel 预览。",
+      "files": [],
+      "expectations": [
+        "能够从云端 RID 或本地文件加载模型",
+        "能够执行 EMT topology 检查",
+        "能够运行 EMT 仿真并读取 plot/channel 摘要"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "对 EMT 仿真结果按 plot 导出首个通道的 CSV 文件。",
+      "expected_output": "返回导出的 CSV 文件路径列表。",
+      "files": [],
+      "expectations": [
+        "能够读取 plot channel 数据",
+        "能够把首个通道导出为 CSV",
+        "能够返回 artifact 路径"
+      ]
+    }
+  ]
+}
