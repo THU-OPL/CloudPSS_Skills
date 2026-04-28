@@ -35,3 +35,4 @@ metadata:
 ## Constraints
 
 - Describe the important verified limits.
+- If shared PSA logic is reused by multiple skills, move it into cloudpss-psa-core instead of copying it into local mylib/.

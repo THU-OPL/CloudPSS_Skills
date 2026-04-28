@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-27T09:30:22.751117+00:00",
+  "generated_at": "2026-04-28T05:32:24.760261+00:00",
   "skills": [
     {
       "id": "emt-fault-study",
@@ -28,17 +28,19 @@
       "description": "使用 CloudPSS SDK 获取模型、搜索可访问算例，并创建本地研究分支副本。当用户提到获取算例、搜索模型、创建本地工作副本或研究分支管理时使用。"
     },
     {
-      "id": "powerflow-engineering-study",
-      "title": "Powerflow Engineering Study",
-      "summary": "使用 CloudPSS SDK 在本地研究副本上执行潮流工程分析，包括线路切除、电压设定值调整、有功重调度、负荷转移和无功压力场景。当用户提到工程化潮流比较、线路停运影响、电压控制或负荷转移研究时使用。",
+      "id": "power-flow-analysis",
+      "title": "Power Flow Analysis",
+      "summary": "使用 cloudpss-psa-core 中兼容 psa.* 导入路径的 PowerSystemAnalysis，对 CloudPSS 模型执行稳态潮流计算，读取母线、线路、发电机结果，并完成基准工况、负荷提升和发电机电压设定值调整等确定性分析。 当用户提到潮流计算、母线电压、线路潮流、负荷提升、发电机电压设定值、运行点对比时使用。",
       "category": "analysis",
       "visibility": "internal",
       "maturity": "validated",
       "owner": "cloudpss-team",
-      "entrypoint": "scripts/verify_powerflow_engineering_study.py",
-      "dependency_strategy": "bundled-mylib",
-      "shared_packages": [],
-      "description": "使用 CloudPSS SDK 在本地研究副本上执行潮流工程分析，包括线路切除、电压设定值调整、有功重调度、负荷转移和无功压力场景。当用户提到工程化潮流比较、线路停运影响、电压控制或负荷转移研究时使用。"
+      "entrypoint": "scripts/verify_power_flow.py",
+      "dependency_strategy": "shared-package",
+      "shared_packages": [
+        "cloudpss-psa-core"
+      ],
+      "description": "使用 cloudpss-psa-core 中兼容 psa.* 导入路径的 PowerSystemAnalysis，对 CloudPSS 模型执行稳态潮流计算，读取母线、线路、发电机结果，并完成基准工况、负荷提升和发电机电压设定值调整等确定性分析。 当用户提到潮流计算、母线电压、线路潮流、负荷提升、发电机电压设定值、运行点对比时使用。"
     }
   ]
 }

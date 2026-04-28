@@ -116,7 +116,7 @@ CloudPSS 这里增加一个强约束：
 当前样板示例覆盖：
 
 - `model-fetch-and-branch`
-- `powerflow-engineering-study`
+- `power-flow-analysis`
 - `emt-fault-study`
 
 ## 8. 发布门禁

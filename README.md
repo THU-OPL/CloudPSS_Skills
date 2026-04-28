@@ -75,7 +75,7 @@ python -m src.cloudpss_skillrepo index-skills
 当前提供 3 个独立 skill 示例：
 
 - `model-fetch-and-branch`
-- `powerflow-engineering-study`
+- `power-flow-analysis`
 - `emt-fault-study`
 
 它们都以 `cloudpss` SDK 为直接依赖，不依赖 `psa/` 或 `CloudPSS_skillhub/`。
@@ -89,5 +89,6 @@ python -m src.cloudpss_skillrepo index-skills
 
 - `docs/repository-design.md`
 - `docs/claude-code-alignment.md`
+- `docs/cloudpss-psa-core-design.md`
 - `docs/contributor-guide.md`
 - `docs/maintainer-guide.md`

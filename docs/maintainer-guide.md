@@ -57,6 +57,7 @@ python -m src.cloudpss_skillrepo release-check
 - 第三方依赖写入 `requirements.txt`
 - 当前 skill 自己的少量私有逻辑写入 `mylib/`
 - 多个 skill 共享的 PSA 私有能力优先拆成独立版本化 Python 包
+- `cloudpss-psa-core` 这类共享包应保持小而稳定，不承载单个 skill 的场景特化逻辑
 - 需要环境变量时，必须写入 `compatibility.required_env_vars`
 - 需要外部服务时，必须写入 `compatibility.notes`
 
@@ -71,5 +72,5 @@ python -m src.cloudpss_skillrepo release-check
 当前样板推荐的三类基准样本：
 
 - `model-fetch-and-branch`
-- `powerflow-engineering-study`
+- `power-flow-analysis`
 - `emt-fault-study`

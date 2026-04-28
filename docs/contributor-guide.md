@@ -73,6 +73,14 @@ cloudpss-psa-core @ git+https://github.com/your-org/cloudpss-psa-core.git@v0.3.1
 cloudpss-psa-core @ git+https://github.com/your-org/cloudpss-psa-core.git@8f3c1d2
 ```
 
+推荐优先沉到 `cloudpss-psa-core` 的能力：
+
+- token 加载与 SDK 配置
+- model fetch/load helper
+- job polling / timeout helper
+- 表格结果归一化
+- 多个 skill 共享的 PSA wrapper
+
 ### 3. `evals/evals.json`
 
 至少包含：
