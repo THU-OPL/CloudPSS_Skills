@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-28T05:32:24.760261+00:00",
+  "generated_at": "2026-04-29T00:57:43.402977+00:00",
   "skills": [
     {
       "id": "emt-fault-study",
@@ -13,6 +13,19 @@
       "dependency_strategy": "bundled-mylib",
       "shared_packages": [],
       "description": "使用 CloudPSS SDK 对准备好的 EMT 模型执行故障研究，并比较故障切除时间和故障严重程度变化对波形恢复的影响。当用户提到 EMT 故障研究、故障切除时间比较或故障后恢复分析时使用。"
+    },
+    {
+      "id": "emt-simulation-workflow",
+      "title": "Emt Simulation Workflow",
+      "summary": "使用 CloudPSS SDK 对 EMT-ready 模型执行完整 EMT 仿真 workflow，包括加载云端或本地模型、检查 EMT topology、提交 `runEMT()` 任务、轮询任务状态、提取 plot 与 channel 摘要，并按需导出 CSV 波形文件。当用户提到 EMT 仿真、暂态时域波形、EMT topology 检查、输出通道巡检、仿真任务状态确认或波形导出时使用。该 skill 适合作为贡献者提交示例，因为它只依赖公开 Python 包 `cloudpss` 和 skill 目录内的最小 `mylib/` 代码，不依赖仓库外私有源码目录。",
+      "category": "workflow",
+      "visibility": "internal",
+      "maturity": "validated",
+      "owner": "cloudpss-team",
+      "entrypoint": "scripts/verify_emt_simulation_workflow.py",
+      "dependency_strategy": "bundled-mylib",
+      "shared_packages": [],
+      "description": "使用 CloudPSS SDK 对 EMT-ready 模型执行完整 EMT 仿真 workflow，包括加载云端或本地模型、检查 EMT topology、提交 `runEMT()` 任务、轮询任务状态、提取 plot 与 channel 摘要，并按需导出 CSV 波形文件。当用户提到 EMT 仿真、暂态时域波形、EMT topology 检查、输出通道巡检、仿真任务状态确认或波形导出时使用。该 skill 适合作为贡献者提交示例，因为它只依赖公开 Python 包 `cloudpss` 和 skill 目录内的最小 `mylib/` 代码，不依赖仓库外私有源码目录。"
     },
     {
       "id": "model-fetch-and-branch",
