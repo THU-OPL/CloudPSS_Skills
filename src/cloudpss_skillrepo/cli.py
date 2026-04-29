@@ -359,7 +359,7 @@ def build_catalog() -> dict[str, Any]:
                 "visibility": metadata["visibility"],
                 "maturity": metadata["maturity"],
                 "owner": metadata["owner"],
-                "entrypoint": metadata["entrypoint"],
+                "entrypoint": metadata.get("entrypoint"),
                 "dependency_strategy": metadata["dependency_strategy"],
                 "shared_packages": metadata.get("shared_packages", []),
                 "description": frontmatter["description"]
@@ -452,7 +452,7 @@ def command_list_skills(args: argparse.Namespace) -> int:
                 "id": frontmatter["name"],
                 "maturity": metadata["maturity"],
                 "category": metadata["category"],
-                "entrypoint": metadata["entrypoint"],
+                "entrypoint": metadata.get("entrypoint"),
             }
         )
     print(json.dumps({"skills": rows}, ensure_ascii=False, indent=2))
