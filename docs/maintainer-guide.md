@@ -19,7 +19,7 @@
 - `SKILL.md` frontmatter 包含必要治理字段
 - `requirements.txt` 存在
 - `evals/evals.json` 存在且与 skill 对齐
-- `scripts/verify_<skill>.py` 存在
+- 如提供 `scripts/`，其入口与验证说明应自洽
 - `mylib/` 边界清晰，或明确不使用 `mylib/`
 - GitHub 共享包依赖已固定到 tag 或 commit
 - 未验证边界写清楚

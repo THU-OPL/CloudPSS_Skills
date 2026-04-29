@@ -12,10 +12,8 @@ metadata:
   category: workflow
   visibility: internal
   maturity: draft
-  entrypoint: scripts/verify_example_skill.py
   dependency_strategy: bundled-mylib
   shared_packages: []
-  verification_method: manual
 ---
 
 # Example Skill

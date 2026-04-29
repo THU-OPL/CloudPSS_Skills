@@ -186,11 +186,9 @@ def validate_skill_dir(skill_dir: Path) -> list[ValidationIssue]:
         issues.append(ValidationIssue("error", "Missing SKILL.md"))
         return issues
     if not evals.exists():
-        issues.append(ValidationIssue("error", "Missing evals/evals.json"))
+        issues.append(ValidationIssue("warning", "Missing evals/evals.json"))
     if not requirements.exists():
-        issues.append(ValidationIssue("error", "Missing requirements.txt"))
-    if not scripts_dir.exists():
-        issues.append(ValidationIssue("error", "Missing scripts/ directory"))
+        issues.append(ValidationIssue("warning", "Missing requirements.txt"))
 
     try:
         frontmatter = parse_frontmatter(skill_md)
@@ -198,19 +196,21 @@ def validate_skill_dir(skill_dir: Path) -> list[ValidationIssue]:
         issues.append(ValidationIssue("error", f"Invalid SKILL.md frontmatter: {exc}"))
         return issues
 
-    try:
-        evals_data = load_json(evals)
-    except Exception as exc:
-        issues.append(ValidationIssue("error", f"Invalid evals/evals.json: {exc}"))
-        return issues
+    evals_data: dict[str, Any] | None = None
+    if evals.exists():
+        try:
+            evals_data = load_json(evals)
+        except Exception as exc:
+            issues.append(ValidationIssue("error", f"Invalid evals/evals.json: {exc}"))
+            return issues
 
     dir_name = skill_dir.name
     front_name = frontmatter.get("name")
-    eval_skill_name = evals_data.get("skill_name")
+    eval_skill_name = evals_data.get("skill_name") if evals_data else None
 
     if front_name != dir_name:
         issues.append(ValidationIssue("error", f"Frontmatter name '{front_name}' does not match directory '{dir_name}'"))
-    if eval_skill_name != dir_name:
+    if evals_data is not None and eval_skill_name != dir_name:
         issues.append(ValidationIssue("error", f"Evals skill_name '{eval_skill_name}' does not match directory '{dir_name}'"))
 
     description = frontmatter.get("description")
@@ -268,10 +268,11 @@ def validate_skill_dir(skill_dir: Path) -> list[ValidationIssue]:
         )
     if not isinstance(shared_packages, list):
         issues.append(ValidationIssue("error", "SKILL.md metadata.shared_packages must be a list"))
-    if not isinstance(entrypoint, str) or not entrypoint.startswith("scripts/"):
-        issues.append(ValidationIssue("error", "SKILL.md metadata.entrypoint must point to scripts/..."))
-    elif not (skill_dir / entrypoint).exists():
-        issues.append(ValidationIssue("error", f"Entrypoint script not found: {entrypoint}"))
+    if entrypoint is not None:
+        if not isinstance(entrypoint, str) or not entrypoint.startswith("scripts/"):
+            issues.append(ValidationIssue("error", "SKILL.md metadata.entrypoint must point to scripts/..."))
+        elif not (skill_dir / entrypoint).exists():
+            issues.append(ValidationIssue("error", f"Entrypoint script not found: {entrypoint}"))
 
     if dependency_strategy in {"bundled-mylib", "hybrid"} and not mylib_dir.exists():
         issues.append(
@@ -295,15 +296,17 @@ def validate_skill_dir(skill_dir: Path) -> list[ValidationIssue]:
             )
         )
 
-    direct_files = list(scripts_dir.glob("verify_*.py"))
-    if not direct_files:
-        issues.append(ValidationIssue("error", "Missing scripts/verify_<skill>.py validation script"))
-    if not isinstance(verification_method, str) or not verification_method.strip():
+    if scripts_dir.exists():
+        direct_files = list(scripts_dir.glob("verify_*.py"))
+        if entrypoint is not None and not direct_files:
+            issues.append(ValidationIssue("warning", "scripts/ exists but no verify_*.py script was found"))
+    if verification_method is not None and (not isinstance(verification_method, str) or not verification_method.strip()):
         issues.append(ValidationIssue("error", "SKILL.md metadata.verification_method must be a non-empty string"))
 
-    eval_items = evals_data.get("evals")
-    if not isinstance(eval_items, list) or not eval_items:
-        issues.append(ValidationIssue("error", "evals/evals.json must contain a non-empty evals list"))
+    if evals_data is not None:
+        eval_items = evals_data.get("evals")
+        if not isinstance(eval_items, list) or not eval_items:
+            issues.append(ValidationIssue("error", "evals/evals.json must contain a non-empty evals list"))
 
     if requirements.exists():
         requirement_lines = [
