@@ -3,7 +3,7 @@ name: Skill Checks
 on:
   pull_request:
     paths:
-      - ".github/workflows/skill-checks.yml"
+      - ".github/workflows/skill_checks.yml"
       - "pyproject.toml"
       - "src/cloudpss_skillrepo/**"
       - "skills/**"
