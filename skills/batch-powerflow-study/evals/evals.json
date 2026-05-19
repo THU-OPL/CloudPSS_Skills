@@ -1,0 +1,39 @@
+{
+  "skill_name": "batch-powerflow-study",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_batch_powerflow",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "evals": [
+    {
+      "id": 1,
+      "name": "多工况潮流计算",
+      "goal": "验证能够对真实 CloudPSS 模型串行运行多个潮流场景",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "power_flow_sample_simple_ramdom",
+        "runProject"
+      ],
+      "pass_criteria": [
+        "至少 4 个场景完成潮流计算",
+        "每个场景均返回母线、线路和发电机摘要",
+        "每个场景母线数量不少于 39"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "运行点对比排序",
+      "goal": "验证能够比较各工况最低电压、最高电压、线路损耗和发电出力差异",
+      "workflow": [
+        "get_bus_all_pf_result",
+        "get_acline_all_pf_result",
+        "get_generator_all_pf_result"
+      ],
+      "pass_criteria": [
+        "输出与基准工况的差值",
+        "输出最低电压排序",
+        "输出有功损耗排序"
+      ]
+    }
+  ]
+}

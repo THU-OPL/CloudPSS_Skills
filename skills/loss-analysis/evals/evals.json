@@ -1,0 +1,41 @@
+{
+  "skill_name": "loss-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_powerflow_loss_analysis",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "evals": [
+    {
+      "id": 1,
+      "name": "基准网损分析",
+      "goal": "验证能够运行真实 CloudPSS 潮流并计算支路损耗和全网损耗",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "runProject",
+        "get_acline_all_pf_result",
+        "get_generator_all_pf_result"
+      ],
+      "pass_criteria": [
+        "支路结果非空",
+        "输出全网有功网损",
+        "输出最高损耗支路排序"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "负荷扰动损耗敏感性",
+      "goal": "验证能够在真实潮流中比较不同负荷水平下的网损变化",
+      "workflow": [
+        "get_load_all_p_set",
+        "set_load_all_p_set",
+        "set_load_all_q_set",
+        "runProject"
+      ],
+      "pass_criteria": [
+        "至少完成 3 个负荷水平潮流",
+        "输出负荷缩放与总网损对应关系",
+        "输出网损变化率"
+      ]
+    }
+  ]
+}

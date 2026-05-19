@@ -1,0 +1,31 @@
+{
+  "skill_name": "reactive-compensation-design",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_simulation",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "validated_on": "2026-05-18",
+  "evals": [
+    {
+      "id": 1,
+      "name": "基于 VSI 的调相机容量迭代",
+      "goal": "验证 batchAddSyncComp 与 iterativeSolutionQ 可消费本地 VSI 结果并返回真实仿真任务。",
+      "workflow": [
+        "calculateVSI",
+        "initModelAndCreateSACanvas",
+        "power_flow_sample_simple_ramdom",
+        "runProject(power-flow)",
+        "batchAddSyncComp",
+        "generate_random_fault_params_set_N_1",
+        "addVoltageMeasures",
+        "iterativeSolutionQ"
+      ],
+      "pass_criteria": [
+        "calculateVSI 返回本地 JSON 结果路径",
+        "batchAddSyncComp 返回 Syncids 与 Tranids",
+        "iterativeSolutionQ 返回非空 TaskIDs",
+        "验证输出不包含 token 或 .env 内容"
+      ]
+    }
+  ]
+}

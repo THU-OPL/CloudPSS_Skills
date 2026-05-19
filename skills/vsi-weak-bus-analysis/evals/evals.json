@@ -1,0 +1,29 @@
+{
+  "skill_name": "vsi-weak-bus-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_simulation",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "validated_on": "2026-05-18",
+  "evals": [
+    {
+      "id": 1,
+      "name": "动态无功注入弱母线识别",
+      "goal": "验证 addVSIQSource、addVSIMeasure、runProject、calculateVSI 可组成真实闭环。",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "power_flow_sample_simple_ramdom",
+        "addVSIQSource",
+        "addVSIMeasure",
+        "runProject",
+        "calculateVSI"
+      ],
+      "pass_criteria": [
+        "calculateVSI 返回 VSIresultDict",
+        "返回 JSON 结果路径且文件存在",
+        "返回图形路径且文件存在",
+        "验证输出不包含 token 或 .env 内容"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "skill_name": "topology-and-model-audit",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_revision_topology_and_powerflow",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "evals": [
+    {
+      "id": 1,
+      "name": "revision 拓扑图构建",
+      "goal": "验证能够初始化真实 CloudPSS 模型、读取 revision 并构建连接图",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "getRevision"
+      ],
+      "pass_criteria": [
+        "组件数量大于 0",
+        "图顶点数量大于 0",
+        "图边数量大于 0"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "模型质量审计",
+      "goal": "验证能够从 revision 和拓扑缓存中识别关键组件、重复标签、空标签与孤立组件",
+      "workflow": [
+        "getRevision",
+        "runProject",
+        "get_bus_all_pf_result"
+      ],
+      "pass_criteria": [
+        "识别不少于 39 个母线组件",
+        "识别至少一个线路组件",
+        "真实潮流运行成功",
+        "输出 model_quality 审计摘要"
+      ]
+    }
+  ]
+}

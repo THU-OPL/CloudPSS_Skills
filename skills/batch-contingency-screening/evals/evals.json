@@ -1,0 +1,32 @@
+{
+  "skill_name": "batch-contingency-screening",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_batch_simulation",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "validated_on": "2026-05-18",
+  "evals": [
+    {
+      "id": 1,
+      "name": "批量随机N-1暂态筛查",
+      "goal": "验证能够提交随机 N-1 暂态批量任务，轮询后台状态，并回收结构化结果摘要。",
+      "workflow": [
+        "get_step_temp",
+        "clear_batch_simulation_tasks",
+        "submit_batch_simulation",
+        "query_batch_simulation_status",
+        "list_batch_simulation_tasks",
+        "get_batch_simulation_result",
+        "extract_and_check_data"
+      ],
+      "pass_criteria": [
+        "submit_batch_simulation 返回 task_id",
+        "query_batch_simulation_status 最终返回 completed",
+        "get_batch_simulation_result 返回 1 条仿真结果",
+        "单条结果不含 error",
+        "单条结果包含 final_result.check_result 和 final_result.fault_info",
+        "验证输出不包含 token 或 .env 内容"
+      ]
+    }
+  ]
+}

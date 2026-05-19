@@ -1,0 +1,2 @@
+cloudpss>=4.5.28
+cloudpss-psa-core[batch] @ git+https://github.com/create-my/cloudpss-psa-core.git@v0.2.0

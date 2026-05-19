@@ -1,0 +1,40 @@
+{
+  "skill_name": "steady-state-contingency-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_powerflow_contingency",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "evals": [
+    {
+      "id": 1,
+      "name": "基准潮流与候选线路识别",
+      "goal": "验证能够运行真实基准潮流并从模型中发现可筛查线路",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "runProject",
+        "get_acline_all_keys"
+      ],
+      "pass_criteria": [
+        "基准潮流收敛",
+        "识别至少一个候选线路",
+        "输出基准母线和支路指标"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "线路退运场景筛查",
+      "goal": "验证能够对真实线路退运场景执行潮流并生成严重度排序",
+      "workflow": [
+        "getRevision",
+        "runProject",
+        "get_bus_all_pf_result",
+        "get_acline_all_pf_result"
+      ],
+      "pass_criteria": [
+        "至少尝试 1 个线路退运场景",
+        "每个场景记录收敛或失败状态",
+        "输出严重度排序"
+      ]
+    }
+  ]
+}

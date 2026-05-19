@@ -1,0 +1,40 @@
+{
+  "skill_name": "model-parameter-extraction",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_revision_and_powerflow",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "evals": [
+    {
+      "id": 1,
+      "name": "设备参数清册",
+      "goal": "验证能够从真实 revision 提取母线、线路、变压器、发电机和负荷参数",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "getRevision",
+        "get_power_flow_settings"
+      ],
+      "pass_criteria": [
+        "识别不少于 39 个母线",
+        "识别至少一个线路、发电机和负荷",
+        "输出组件参数样例"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "参数驱动潮流验证",
+      "goal": "验证提取的潮流设置可用于真实 CloudPSS 潮流计算并读取运行结果",
+      "workflow": [
+        "power_flow_sample_simple_ramdom",
+        "get_bus_all_pf_result",
+        "get_acline_all_pf_result",
+        "get_generator_all_pf_result"
+      ],
+      "pass_criteria": [
+        "潮流计算返回 success",
+        "母线结果数量不少于 39",
+        "线路和发电机结果非空"
+      ]
+    }
+  ]
+}

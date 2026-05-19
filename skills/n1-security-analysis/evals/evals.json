@@ -1,0 +1,33 @@
+{
+  "skill_name": "n1-security-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_simulation",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "validated_on": "2026-05-18",
+  "evals": [
+    {
+      "id": 1,
+      "name": "单次随机N-1暂态安全校核",
+      "goal": "验证当前 src/psa 闭环可完成基准潮流、随机 N-1 故障设置、量测挂接、电磁暂态仿真和结构化结果提取。",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "power_flow_sample_simple_ramdom",
+        "generate_random_fault_params_set_N_1",
+        "addComponentOutputMeasures(Vrms)",
+        "addComponentOutputMeasures(PT_o)",
+        "addComponentOutputMeasures(wr_o)",
+        "addComponentOutputMeasures(theta_o)",
+        "runProject",
+        "extract_and_check_data"
+      ],
+      "pass_criteria": [
+        "power_flow_sample_simple_ramdom 返回 status=success",
+        "generate_random_fault_params_set_N_1 返回 transKey、cut_time 和 fault_type_index",
+        "runProject 返回 runner_id",
+        "extract_and_check_data 返回 fault_info 和 check_result",
+        "plot_export_errors 允许非空，不作为主流程失败条件"
+      ]
+    }
+  ]
+}

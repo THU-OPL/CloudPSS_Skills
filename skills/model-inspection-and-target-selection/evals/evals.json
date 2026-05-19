@@ -1,0 +1,56 @@
+{
+  "skill_name": "model-inspection-and-target-selection",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_model_inspection",
+  "test_model": "model/yuanxuefeng/IEEE39",
+  "validated_on": "2026-05-18",
+  "evals": [
+    {
+      "id": 1,
+      "name": "模型库存盘点",
+      "goal": "验证能够初始化真实模型并巡检当前潮流方案、电磁暂态方案、参数方案与组件库存",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "getCurrentJob",
+        "getCurrentConfig",
+        "getRevision"
+      ],
+      "pass_criteria": [
+        "能返回 SA_潮流计算 与 SA_电磁暂态仿真",
+        "能返回 SA_参数方案",
+        "从 revision 中识别到不少于 39 个母线标签",
+        "能识别到至少一个 TLine_3p-* 线路标签"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "目标对象解析",
+      "goal": "验证能够从真实 revision 中选取 bus/generator/line 标签，并解析为真实 key",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "getRevision",
+        "convertLabelToKey"
+      ],
+      "pass_criteria": [
+        "能解析至少一个母线标签",
+        "能解析至少一个发电机标签",
+        "能解析至少一个线路标签"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "拓扑预检查",
+      "goal": "验证能够刷新真实拓扑并构建网络图缓存，为后续邻域分析做准备",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "refreshTopology",
+        "generateNetwork"
+      ],
+      "pass_criteria": [
+        "refreshTopology 调用成功",
+        "generateNetwork 调用成功且无异常"
+      ]
+    }
+  ]
+}
