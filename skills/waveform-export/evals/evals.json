@@ -1,0 +1,40 @@
+{
+  "skill_name": "waveform-export",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_waveform_export",
+  "test_model": "model/<your-account>/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实EMT波形读取",
+      "goal": "验证能够从真实CloudPSS EMT job result读取plot、channel和x/y波形",
+      "workflow": [
+        "Model.fetch",
+        "runEMT",
+        "getPlots",
+        "getPlotChannelData"
+      ],
+      "pass_criteria": [
+        "EMT仿真成功",
+        "至少存在一个plot和一个channel",
+        "目标channel采样点数大于0"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "CSV和JSON导出校验",
+      "goal": "验证真实波形能够导出为CSV和JSON并保留有效时间和值序列",
+      "workflow": [
+        "export_waveforms_csv",
+        "export_waveforms_json",
+        "validate_waveform_export"
+      ],
+      "pass_criteria": [
+        "导出文件存在且非空",
+        "时间轴单调递增",
+        "导出通道统计不为空"
+      ]
+    }
+  ]
+}

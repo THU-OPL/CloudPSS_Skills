@@ -1,0 +1,40 @@
+{
+  "skill_name": "comtrade-export",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_comtrade_export",
+  "test_model": "model/<your-account>/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实EMT波形转COMTRADE",
+      "goal": "验证能够从真实CloudPSS EMT结果导出COMTRADE cfg/dat文件",
+      "workflow": [
+        "Model.fetch",
+        "runEMT",
+        "getPlotChannelData",
+        "write cfg/dat"
+      ],
+      "pass_criteria": [
+        "EMT仿真成功",
+        "cfg和dat文件存在",
+        "导出通道数大于0"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "COMTRADE结构校验",
+      "goal": "验证导出的COMTRADE文件通道数和样本数与源波形一致",
+      "workflow": [
+        "parse cfg",
+        "parse ascii dat",
+        "compare counts"
+      ],
+      "pass_criteria": [
+        "cfg模拟通道数等于导出通道数",
+        "dat行数等于样本数",
+        "dat每行字段数正确"
+      ]
+    }
+  ]
+}

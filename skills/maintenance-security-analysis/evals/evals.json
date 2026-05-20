@@ -1,0 +1,42 @@
+{
+  "skill_name": "maintenance-security-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_powerflow_maintenance_n1",
+  "test_model": "model/CloudPSS/IEEE39",
+  "evals": [
+    {
+      "id": 1,
+      "name": "检修方式潮流验证",
+      "goal": "验证能够在真实 CloudPSS 模型上退运一条检修线路并运行潮流",
+      "workflow": [
+        "initModelAndCreateSACanvas",
+        "project.removeComponent",
+        "runProject",
+        "get_bus_all_pf_result",
+        "get_acline_all_pf_result"
+      ],
+      "pass_criteria": [
+        "识别至少两条候选交流线路",
+        "检修方式潮流返回收敛或明确失败状态",
+        "输出检修方式电压、损耗和支路应力摘要"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "检修方式剩余 N-1 筛查",
+      "goal": "验证能够在检修方式基础上继续退运剩余线路并生成安全风险排序",
+      "workflow": [
+        "project.removeComponent",
+        "runProject",
+        "get_bus_all_pf_result",
+        "get_acline_all_pf_result"
+      ],
+      "pass_criteria": [
+        "至少筛查 1 个剩余 N-1 场景",
+        "每个场景记录收敛状态或失败原因",
+        "输出 residual_severity_ranking"
+      ]
+    }
+  ]
+}

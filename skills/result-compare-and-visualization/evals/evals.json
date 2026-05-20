@@ -1,0 +1,40 @@
+{
+  "skill_name": "result-compare-and-visualization",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_result_compare_visualization",
+  "test_model": "model/<your-account>/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "多场景真实EMT结果对比",
+      "goal": "验证能够运行至少两个真实CloudPSS EMT场景并提取同名通道指标",
+      "workflow": [
+        "Model.fetch",
+        "runEMT",
+        "getPlotChannelData",
+        "compare metrics"
+      ],
+      "pass_criteria": [
+        "至少两个EMT job成功",
+        "同名通道集合非空",
+        "指标差异摘要非空"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "对比报告和图表产物",
+      "goal": "验证真实仿真结果能够生成JSON、Markdown和PNG图表",
+      "workflow": [
+        "write comparison json",
+        "write markdown report",
+        "render png chart"
+      ],
+      "pass_criteria": [
+        "JSON文件存在且包含comparison",
+        "Markdown报告存在",
+        "PNG图表存在且非空"
+      ]
+    }
+  ]
+}

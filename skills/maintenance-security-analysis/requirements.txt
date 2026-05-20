@@ -1,0 +1,3 @@
+cloudpss>=4.5.28
+python-dotenv>=1.0.0
+cloudpss-psa-core @ git+https://github.com/create-my/cloudpss-psa-core.git@v0.2.0
