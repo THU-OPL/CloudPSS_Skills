@@ -66,11 +66,13 @@ metadata:
 该 skill 已在真实 CloudPSS 环境完成过一次直接验证：
 
 - date: 2026-04-28
-- model: `model/yuanxuefeng/IEEE3`
+- model: private EMT-ready IEEE3 copy under the verifier's own account
 - model_name: `3机9节点标准测试系统`
 - job_id: `1fefdadb-d7bf-4a93-917a-fccc2f850f58`
 - final_status: `1`
 - plot_count: `3`
+
+公开使用时，默认模型 RID 已切换为 `model/<your-account>/IEEE3` 占位符。用户需要传入自己账号下的 EMT-ready 模型 RID，或先从官方 `model/CloudPSS/IEEE3` 保存/构建到自己的账号，再执行验证。
 
 导出的示例产物位于：
 

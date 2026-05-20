@@ -33,7 +33,7 @@ metadata:
 ## 前置条件
 
 - `.env` 已配置 `SIMSTUDIO_TOKEN` 和 `CLOUDPSS_API_URL`。
-- 默认模型使用 `model/yuanxuefeng/IEEE39`。
+- 默认模型使用 `model/CloudPSS/IEEE39`。
 - 运行时依赖 `cloudpss-psa-core` 提供的 `psa.tool_box.PowerSystemAnalysis`。
 
 ## 工具选择规则
@@ -53,7 +53,7 @@ metadata:
 
 ### 1. 初始化模型
 
-1. 调用 `initModelAndCreateSACanvas(cloudpss_model="model/yuanxuefeng/IEEE39")`
+1. 调用 `initModelAndCreateSACanvas(cloudpss_model="model/CloudPSS/IEEE39")`
 2. 确认返回包含：
    `SA_潮流计算`
    `SA_电磁暂态仿真`
@@ -123,3 +123,4 @@ metadata:
 - 从真实 revision 发现目标对象
 - 解析真实标签到 key
 - 完成拓扑预检查
+

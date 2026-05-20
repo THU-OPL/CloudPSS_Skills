@@ -50,7 +50,7 @@ metadata:
 
 ## Constraints
 
-- 默认验证模型为 `model/yuanxuefeng/IEEE39`。
+- 默认验证模型为 `model/CloudPSS/IEEE39`。
 - 当前审计基于真实 revision 连接关系；若 CloudPSS `ModelTopology` GraphQL 在部署中可用，可额外启用拓扑 API 检查。
 - 孤立组件不一定都是错误，辅助信号、控制元件或未接入的临时画布组件需要结合工程语义判断。
 - 不在 skill 内复制旧 PSA 仓库逻辑，统一使用 `cloudpss-psa-core`。
@@ -58,3 +58,4 @@ metadata:
 ## Verified script
 
 - `skills/topology-and-model-audit/scripts/verify_topology_and_model_audit.py`
+

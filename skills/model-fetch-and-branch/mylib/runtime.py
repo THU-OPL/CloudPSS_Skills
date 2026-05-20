@@ -5,7 +5,7 @@ from pathlib import Path
 from cloudpss import Model, setToken
 
 
-DEFAULT_READONLY_MODEL_RID = "model/holdme/IEEE39"
+DEFAULT_READONLY_MODEL_RID = "model/CloudPSS/IEEE39"
 
 
 def load_token(token_path: str = ".cloudpss_token") -> str:

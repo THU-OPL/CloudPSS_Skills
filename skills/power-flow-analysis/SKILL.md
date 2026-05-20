@@ -32,7 +32,7 @@ metadata:
 ## Workflow
 
 1. 读取 `.env` 中的 `SIMSTUDIO_TOKEN` 和 `CLOUDPSS_API_URL`
-2. 调用 `initModelAndCreateSACanvas(cloudpss_model="model/yuanxuefeng/IEEE39")`
+2. 调用 `initModelAndCreateSACanvas(cloudpss_model="model/CloudPSS/IEEE39")`
 3. 基准工况使用 `power_flow_sample_simple_ramdom(..., P_low=1.0, P_high=1.0, V_low=1.0, V_high=1.0)`
 4. 读取 `get_bus_all_pf_result`、`get_acline_all_pf_result`、`get_generator_all_pf_result`
 5. 若要做确定性场景修改，先用 `runProject(...)` 得到当前工况，再调用 `set_load_all_*` 或 `set_generator_all_v_set`
@@ -48,8 +48,9 @@ metadata:
 
 ## Constraints
 
-- 当前示例固定使用 `model/yuanxuefeng/IEEE39`
+- 当前示例固定使用 `model/CloudPSS/IEEE39`
 - 不依赖 MCP，直接使用 Python + CloudPSS SDK
 - 共享 PSA 逻辑来自 `cloudpss-psa-core`，不要再从旧 `psa/` 仓库目录直接 import
 - 批量 `set_*` 的输入顺序必须与对应 getter 返回顺序一致
 - 调试真实 CloudPSS 执行时，优先运行仓库内 `.py` 脚本，不使用内联 `python -`
+

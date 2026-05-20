@@ -32,12 +32,12 @@ metadata:
 ## 前置条件
 
 - `.env` 已配置 `SIMSTUDIO_TOKEN` 和 `CLOUDPSS_API_URL`。
-- 默认验证模型为 `model/yuanxuefeng/IEEE39`。
+- 默认验证模型为 `model/CloudPSS/IEEE39`。
 - 运行时依赖 `cloudpss-psa-core` 提供的 `psa.tool_box.PowerSystemAnalysis`。
 
 ## 已验证工作流
 
-1. `initModelAndCreateSACanvas(cloudpss_model="model/yuanxuefeng/IEEE39")`
+1. `initModelAndCreateSACanvas(cloudpss_model="model/CloudPSS/IEEE39")`
 2. `power_flow_sample_simple_ramdom(flowJobName="SA_潮流计算", flowConfigname="SA_参数方案", P_low=1.0, P_high=1.0)`
 3. `generate_random_fault_params_set_N_1()`
 4. 依次调用 `addComponentOutputMeasures` 挂 4 组量测：
@@ -69,3 +69,4 @@ metadata:
 - Python 直调版：`skills/n1-security-analysis/scripts/verify_n1_security.py`
 
 该脚本于 `2026-03-26` 基于真实 CloudPSS 仿真完成验证。
+

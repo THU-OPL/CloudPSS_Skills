@@ -15,7 +15,8 @@ from mylib.runtime import DEFAULT_READONLY_MODEL_RID, configure_token, create_lo
 def main() -> None:
     configure_token()
     model = load_model_from_source(DEFAULT_READONLY_MODEL_RID)
-    branch_path = str(SKILL_DIR / "artifacts" / "model-fetch-working-copy.yaml")
+    root = SKILL_DIR.parents[1]
+    branch_path = str(root / "results" / "skill-verification" / "model-fetch-and-branch" / "model-fetch-working-copy.yaml")
     Path(branch_path).parent.mkdir(parents=True, exist_ok=True)
     result = {
         "ok": True,

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import os
 import time
@@ -16,7 +16,7 @@ for env_path in [ROOT / ".env", *[parent / ".env" for parent in ROOT.parents]]:
         load_dotenv(env_path)
         break
 
-MODEL_ID = os.environ.get("CLOUDPSS_TEST_MODEL_RID", "model/yuanxuefeng/IEEE39")
+MODEL_ID = os.environ.get("CLOUDPSS_TEST_MODEL_RID", "model/CloudPSS/IEEE39")
 FLOW_JOB_NAME = os.environ.get("CLOUDPSS_TEST_FLOW_JOB", "潮流计算方案 1")
 EMT_JOB_NAME = os.environ.get("CLOUDPSS_TEST_EMT_JOB", "电磁暂态仿真方案 1")
 CONFIG_NAME = os.environ.get("CLOUDPSS_TEST_CONFIG", "参数方案 1")
@@ -154,3 +154,4 @@ def summarize_batch_result(result_payload: dict[str, Any]) -> dict[str, Any]:
     summary = deepcopy(result_payload)
     summary["simulations"] = simulations
     return summary
+

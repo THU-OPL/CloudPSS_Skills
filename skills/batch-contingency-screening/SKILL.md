@@ -32,7 +32,7 @@ metadata:
 ## 前置条件
 
 - `.env` 已配置 `SIMSTUDIO_TOKEN` 和 `CLOUDPSS_API_URL`。
-- 当前验证模型为 `model/yuanxuefeng/IEEE39`。
+- 当前验证模型为 `model/CloudPSS/IEEE39`。
 - 运行时依赖 `cloudpss-psa-core[batch]` 提供的 `psa.tool_box.SimulationOrchestrator`。
 - 批量任务建议显式设置：
   `PSA_TASKS_DIR`
@@ -93,3 +93,4 @@ metadata:
 ## 已验证脚本
 
 - Python 直调版：`skills/batch-contingency-screening/scripts/verify_batch_contingency_screening.py`
+

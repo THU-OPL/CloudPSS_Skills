@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[3]
 load_dotenv(ROOT / ".env")
 
 
-MODEL_ID = "model/yuanxuefeng/IEEE39"
+MODEL_ID = "model/CloudPSS/IEEE39"
 JOB_NAME = "SA_潮流计算"
 CONFIG_NAME = "SA_参数方案"
 
@@ -159,3 +159,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

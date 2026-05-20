@@ -49,7 +49,7 @@ metadata:
 
 ## Constraints
 
-- 默认模型为 `model/yuanxuefeng/IEEE39`。
+- 默认模型为 `model/CloudPSS/IEEE39`。
 - 参数字段直接来自 CloudPSS revision，不做跨模型字段名标准化；下游使用前应保留原始 `definition`。
 - 导出脚本默认只打印摘要和样例，避免把大型 revision 全量塞进 agent 上下文。
 - 如果需要全量 CSV/JSON，可在验证脚本基础上打开 `CLOUDPSS_PARAM_EXPORT_FULL=1` 后写入本地 `results/skill-local-export/model-parameter-extraction`。
@@ -57,3 +57,4 @@ metadata:
 ## Verified script
 
 - `skills/model-parameter-extraction/scripts/verify_model_parameter_extraction.py`
+

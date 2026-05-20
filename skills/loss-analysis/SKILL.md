@@ -53,7 +53,7 @@ metadata:
 
 ## Constraints
 
-- 默认模型为 `model/yuanxuefeng/IEEE39`。
+- 默认模型为 `model/CloudPSS/IEEE39`。
 - 支路损耗从潮流结果首末端功率相加得到，依赖 CloudPSS 支路表符号约定。
 - 该 skill 不执行 OPF；“降损建议”只基于损耗排序和敏感性，不替代优化计算。
 - 负荷敏感性会受到平衡机和发电机设定方式影响；若出现负荷增加但网损下降，应结合调度分配和无功电压控制解释。
@@ -62,3 +62,4 @@ metadata:
 ## Verified script
 
 - `skills/loss-analysis/scripts/verify_loss_analysis.py`
+

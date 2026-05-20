@@ -48,7 +48,7 @@ metadata:
 
 ## Constraints
 
-- 默认模型为 `model/yuanxuefeng/IEEE39`。
+- 默认模型为 `model/CloudPSS/IEEE39`。
 - 批量脚本使用串行运行，优先保证可追踪性；若要并发运行，应改用 `SimulationOrchestrator` 并限制 CPU。
 - 批量 `set_load_all_*` 与 `set_generator_all_v_set` 的输入顺序必须与共享包 getter 返回顺序一致。
 - 调整后场景使用 `runProject`，不要再调用 `power_flow_sample_simple_ramdom` 覆盖手工设定。
@@ -56,3 +56,4 @@ metadata:
 ## Verified script
 
 - `skills/batch-powerflow-study/scripts/verify_batch_powerflow_study.py`
+

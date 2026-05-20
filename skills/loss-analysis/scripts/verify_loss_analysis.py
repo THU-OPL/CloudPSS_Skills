@@ -34,7 +34,7 @@ elif not os.getenv("SIMSTUDIO_TOKEN") or not os.getenv("CLOUDPSS_API_URL"):
 from psa.tool_box.PowerSystemAnalysis import PowerSystemAnalysis  # noqa: E402
 
 
-MODEL_ID = os.environ.get("CLOUDPSS_TEST_MODEL_RID", "model/yuanxuefeng/IEEE39")
+MODEL_ID = os.environ.get("CLOUDPSS_TEST_MODEL_RID", "model/CloudPSS/IEEE39")
 FLOW_JOB_NAME = os.environ.get("CLOUDPSS_TEST_FLOW_JOB", "潮流计算方案 1")
 CONFIG_NAME = os.environ.get("CLOUDPSS_TEST_CONFIG", "参数方案 1")
 
@@ -192,3 +192,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

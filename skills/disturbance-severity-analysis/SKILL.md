@@ -28,7 +28,7 @@ metadata:
 ## 前置条件
 
 - `.env` 已配置 `SIMSTUDIO_TOKEN` 和 `CLOUDPSS_API_URL`。
-- 当前验证模型为 `model/yuanxuefeng/IEEE39`。
+- 当前验证模型为 `model/CloudPSS/IEEE39`。
 - 运行时依赖 `cloudpss-psa-core` 提供的 `psa.tool_box.PowerSystemAnalysis`。
 
 ## 默认模式
@@ -97,3 +97,4 @@ metadata:
 
 - Python 直调：`skills/disturbance-severity-analysis/scripts/verify_disturbance_severity.py`
 - 评测定义：`skills/disturbance-severity-analysis/evals/evals.json`
+

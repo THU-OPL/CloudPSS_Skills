@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "src"
-MODEL_ID = os.environ.get("CLOUDPSS_TEST_MODEL_RID", "model/yuanxuefeng/IEEE39")
+MODEL_ID = os.environ.get("CLOUDPSS_TEST_MODEL_RID", "model/CloudPSS/IEEE39")
 FLOW_JOB_NAME = os.environ.get("CLOUDPSS_TEST_FLOW_JOB", "潮流计算方案 1")
 EMT_JOB_NAME = os.environ.get("CLOUDPSS_TEST_EMT_JOB", "电磁暂态仿真方案 1")
 CONFIG_NAME = os.environ.get("CLOUDPSS_TEST_CONFIG", "参数方案 1")
@@ -48,3 +48,4 @@ def first_existing_path(payload: dict[str, Any], suffixes: tuple[str, ...]) -> s
 
 def path_exists(path_value: str | None) -> bool:
     return bool(path_value and Path(path_value).exists())
+

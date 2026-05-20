@@ -8,7 +8,7 @@ import time
 from cloudpss import Model, setToken
 
 
-DEFAULT_MODEL_SOURCE = "model/holdme/IEEE3"
+DEFAULT_MODEL_SOURCE = "model/<your-account>/IEEE3"
 FAULT_DEFINITION = "model/CloudPSS/_newFaultResistor_3p"
 CHANNEL_DEFINITION = "model/CloudPSS/_newChannel"
 EMT_JOB_RID = "function/CloudPSS/emtps"
@@ -34,6 +34,13 @@ def configure_token(token_path: str = ".cloudpss_token") -> str:
 
 
 def load_model_from_source(source: str):
+    if "<your-account>" in source:
+        raise ValueError(
+            "Pass a model RID under your own account. "
+            "If needed, save or build an EMT-ready copy from model/CloudPSS/IEEE3 first."
+        )
+    if source.startswith("model/holdme/"):
+        raise ValueError("model/holdme/* is not allowed for live verification")
     candidate = Path(source).expanduser()
     if candidate.exists():
         return Model.load(str(candidate))

@@ -9,7 +9,7 @@ from typing import Any
 from cloudpss import Model, setToken
 
 
-DEFAULT_EMT_MODEL_RID = os.environ.get("TEST_MODEL_RID", "model/holdme/IEEE3")
+DEFAULT_EMT_MODEL_RID = os.environ.get("CLOUDPSS_TEST_EMT_MODEL_RID", "model/<your-account>/IEEE3")
 
 
 def _parse_env_file(env_path: Path) -> dict[str, str]:
@@ -58,6 +58,13 @@ def configure_token(token_path: str = ".cloudpss_token") -> str:
 
 
 def load_model_from_source(source: str):
+    if "<your-account>" in source:
+        raise ValueError(
+            "Set CLOUDPSS_TEST_EMT_MODEL_RID or pass a model RID under your own account. "
+            "If needed, save or build an EMT-ready copy from model/CloudPSS/IEEE3 first."
+        )
+    if source.startswith("model/holdme/"):
+        raise ValueError("model/holdme/* is not allowed for live verification")
     candidate = Path(source).expanduser()
     if candidate.exists():
         return Model.load(str(candidate))
