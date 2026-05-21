@@ -1,0 +1,44 @@
+{
+  "skill_name": "harmonic-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_harmonic_analysis",
+  "test_model": "model/<your-account>/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实EMT波形谐波分析",
+      "goal": "验证能够从真实CloudPSS EMT job result读取目标通道并计算谐波指标",
+      "workflow": [
+        "Model.fetch or Model.load",
+        "runEMT",
+        "getPlots",
+        "getPlotChannelData",
+        "analyze_harmonics"
+      ],
+      "pass_criteria": [
+        "EMT仿真成功",
+        "至少分析一个通道",
+        "每个分析通道包含THD、基波和谐波结果",
+        "summary包含THD限值判断"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "谐波分析产物导出",
+      "goal": "验证谐波分析结果能够导出为JSON、CSV和Markdown报告",
+      "workflow": [
+        "write_summary_json",
+        "write_channel_csv",
+        "write_spectrum_csv",
+        "write_markdown_report"
+      ],
+      "pass_criteria": [
+        "导出文件存在且非空",
+        "CSV包含通道和THD字段",
+        "频谱CSV包含谐波次数和含量字段",
+        "输出中不包含凭据值"
+      ]
+    }
+  ]
+}

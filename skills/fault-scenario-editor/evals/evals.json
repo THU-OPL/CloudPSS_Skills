@@ -1,0 +1,57 @@
+{
+  "skill_name": "fault-scenario-editor",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_model_inspection",
+  "test_model": "CLOUDPSS_TEST_EMT_MODEL_RID",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实模型巡检",
+      "goal": "从真实 CloudPSS 模型中识别故障元件、量测通道和基础组件库存",
+      "workflow": [
+        "load_model",
+        "inspect_components",
+        "select_fault_anchor",
+        "select_measurement_anchor"
+      ],
+      "pass_criteria": [
+        "至少发现一个 `_newFaultResistor_3p` 故障元件",
+        "至少发现一个 `_newChannel` 量测通道",
+        "inventory 摘要包含 bus / line / generator 的样本标签"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "场景蓝图生成",
+      "goal": "生成可供 EMT 故障研究和扫描类 skill 复用的标准化场景蓝图",
+      "workflow": [
+        "build_fault_scenario_blueprint",
+        "export_blueprint",
+        "render_blueprint_markdown"
+      ],
+      "pass_criteria": [
+        "blueprint 包含 emt_fault_study、fault_clearing_scan、fault_severity_scan 三类模板",
+        "blueprint 包含 fault_point、breaker_action 和 scenario_dimensions 字段组",
+        "导出的 JSON 和 Markdown 文件存在",
+        "蓝图包含 fault anchor 和 measurement anchor"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "下游契约检查",
+      "goal": "验证生成的蓝图可以直接作为后续故障分析 skill 的输入契约",
+      "workflow": [
+        "load_model",
+        "build_fault_scenario_blueprint",
+        "validate_downstream_contract"
+      ],
+      "pass_criteria": [
+        "downstream_contract 包含三个下游 skill 名称",
+        "editable_fields 包含 fs、fe、chg 和 trace_name",
+        "fault_scene_fields 包含故障点、断路器动作和扫描维度",
+        "蓝图不包含 EMT job 提交结果"
+      ]
+    }
+  ]
+}

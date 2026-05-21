@@ -76,9 +76,9 @@ metadata:
 
 导出的示例产物位于：
 
-- `artifacts/plot_0_#wr1_0.csv`
-- `artifacts/plot_1_#P2_0.csv`
-- `artifacts/plot_2_vac_0.csv`
+- `results/skill-verification/emt-simulation-workflow/plot_0_#wr1_0.csv`
+- `results/skill-verification/emt-simulation-workflow/plot_1_#P2_0.csv`
+- `results/skill-verification/emt-simulation-workflow/plot_2_vac_0.csv`
 
 ## Maintainer review focus
 

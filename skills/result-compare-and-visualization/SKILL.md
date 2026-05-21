@@ -32,7 +32,6 @@ metadata:
 ## Workflow
 
 1. 加载 token 和 EMT-ready 模型；公开使用时通过 `CLOUDPSS_TEST_EMT_MODEL_RID` 或命令行传入自己账号下的模型 RID。
-2. 拒绝 `model/holdme/...` 验证源。
 3. 运行至少两个真实 CloudPSS EMT 场景。
 4. 从每个 `job.result` 中读取目标 plot/channel 的 `x/y` 波形。
 5. 对同名通道计算指标，并计算相对基准的差异。

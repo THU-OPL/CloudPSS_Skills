@@ -1,0 +1,37 @@
+{
+  "skill_name": "fault-clearing-scan",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "direct_cloudpss_emt_fault_clearing_scan",
+  "test_model": "CLOUDPSS_TEST_EMT_MODEL_RID",
+  "evals": [
+    {
+      "id": 1,
+      "name": "蓝图输入扫描",
+      "goal": "使用 fault-scenario-editor 的 clearing 模板对多个 fe_values 执行 EMT 扫描",
+      "workflow": [
+        "load_model",
+        "run_fault_clearing_scan"
+      ],
+      "pass_criteria": [
+        "results 至少包含 3 个清除时间点",
+        "每个结果包含 fe、voltage_at_study 和 job_id",
+        "monotonic_degradation 字段存在"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "产物导出",
+      "goal": "生成 JSON、CSV 和 Markdown 扫描产物",
+      "workflow": [
+        "run_fault_clearing_scan",
+        "write_outputs"
+      ],
+      "pass_criteria": [
+        "JSON 文件存在且非空",
+        "CSV 文件存在且非空",
+        "Markdown 报告存在且非空"
+      ]
+    }
+  ]
+}
