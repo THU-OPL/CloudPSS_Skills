@@ -1,0 +1,43 @@
+{
+  "skill_name": "parameter-sensitivity-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_parameter_sensitivity_analysis",
+  "test_model": "model/CloudPSS/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实EMT单参数灵敏度扫描",
+      "goal": "验证能够修改本地工作副本中的单个模型参数，运行多次真实CloudPSS EMT，并计算通道指标灵敏度",
+      "workflow": [
+        "Model.fetch or Model.load",
+        "clone_model_working_copy",
+        "updateComponent",
+        "runEMT",
+        "extract_channel_metrics",
+        "linear_regression_sensitivity"
+      ],
+      "pass_criteria": [
+        "至少3个扫描点真实EMT仿真成功",
+        "每个扫描点记录参数值、job_id和指标",
+        "输出包含sensitivity_ranking",
+        "至少一个指标的灵敏度非零"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "灵敏度产物导出",
+      "goal": "验证参数灵敏度结果能够导出为JSON、CSV和Markdown报告",
+      "workflow": [
+        "write_summary_json",
+        "write_sensitivity_csv",
+        "write_markdown_report"
+      ],
+      "pass_criteria": [
+        "导出文件存在且非空",
+        "CSV包含metric、sensitivity、normalized_sensitivity和rank字段",
+        "输出中不包含凭据值"
+      ]
+    }
+  ]
+}
