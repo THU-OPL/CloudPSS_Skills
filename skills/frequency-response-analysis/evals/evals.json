@@ -1,0 +1,42 @@
+{
+  "skill_name": "frequency-response-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_frequency_response_analysis",
+  "test_model": "model/CloudPSS/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实EMT频率响应指标",
+      "goal": "验证能够从真实CloudPSS EMT job result读取转速/频率通道并计算频率响应指标",
+      "workflow": [
+        "Model.fetch or Model.load",
+        "runEMT",
+        "getPlots",
+        "getPlotChannelData",
+        "analyze_frequency_response"
+      ],
+      "pass_criteria": [
+        "EMT仿真成功",
+        "至少分析一个频率或转速通道",
+        "每个通道包含初值、最低/最高值、RoCoF和稳态值",
+        "summary包含频率偏差和稳定阈值判断"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "频率响应产物导出",
+      "goal": "验证频率响应结果能够导出为JSON、CSV和Markdown报告",
+      "workflow": [
+        "write_summary_json",
+        "write_channel_csv",
+        "write_markdown_report"
+      ],
+      "pass_criteria": [
+        "导出文件存在且非空",
+        "CSV包含通道、最低值、RoCoF和稳定时间字段",
+        "输出中不包含凭据值"
+      ]
+    }
+  ]
+}

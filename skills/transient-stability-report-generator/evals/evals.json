@@ -1,0 +1,43 @@
+{
+  "skill_name": "transient-stability-report-generator",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_transient_stability_report",
+  "test_model": "model/CloudPSS/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实EMT暂态稳定报告",
+      "goal": "验证能够从真实CloudPSS EMT job result读取转速、功率和电压通道并生成暂态稳定报告",
+      "workflow": [
+        "Model.fetch or Model.load",
+        "runEMT",
+        "getPlots",
+        "getPlotChannelData",
+        "analyze_transient_stability",
+        "write_markdown_report"
+      ],
+      "pass_criteria": [
+        "EMT仿真成功",
+        "至少分析一个转速或电压通道",
+        "summary包含稳定性结论、最大转速偏差、最大RoCoF和最低电压",
+        "Markdown报告包含执行摘要、关键指标表和工程建议"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "报告产物导出",
+      "goal": "验证暂态稳定报告能够导出为JSON、CSV和Markdown",
+      "workflow": [
+        "write_summary_json",
+        "write_channel_csv",
+        "write_markdown_report"
+      ],
+      "pass_criteria": [
+        "导出文件存在且非空",
+        "CSV包含通道、类型、稳定判据和关键指标字段",
+        "输出中不包含凭据值"
+      ]
+    }
+  ]
+}
