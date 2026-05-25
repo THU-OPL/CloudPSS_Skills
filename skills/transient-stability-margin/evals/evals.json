@@ -1,0 +1,43 @@
+{
+  "skill_name": "transient-stability-margin",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_transient_stability_margin",
+  "test_model": "model/CloudPSS/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实EMT暂态稳定裕度搜索",
+      "goal": "验证能够修改本地工作副本故障切除时间，运行多次真实CloudPSS EMT，并基于转速波形判据估计CCT或CCT下界",
+      "workflow": [
+        "Model.fetch or Model.load",
+        "clone model",
+        "update fault fs/fe/chg",
+        "runEMT",
+        "extract speed traces",
+        "coarse scan and optional bisection"
+      ],
+      "pass_criteria": [
+        "至少完成3个真实EMT扫描点",
+        "每个扫描点包含CloudPSS job id",
+        "输出CCT估计或CCT下界",
+        "输出稳定裕度和JSON/CSV/Markdown产物"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "暂态稳定判据和报告产物",
+      "goal": "验证结果包含转速偏差、RoCoF、稳定时间、失稳原因和工程限制说明",
+      "workflow": [
+        "analyze speed channels",
+        "classify stable/unstable",
+        "write artifacts"
+      ],
+      "pass_criteria": [
+        "summary包含cct_seconds、cct_relation、margin_seconds、search_status",
+        "CSV包含clearing_time、stable、job_id",
+        "报告中明确该结果为仿真初筛而非合规认证"
+      ]
+    }
+  ]
+}
