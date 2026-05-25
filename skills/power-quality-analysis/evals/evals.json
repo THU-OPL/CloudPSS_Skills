@@ -1,0 +1,43 @@
+{
+  "skill_name": "power-quality-analysis",
+  "skill_version": "1.0",
+  "verification_required": true,
+  "verification_method": "real_cloudpss_emt_power_quality_analysis",
+  "test_model": "model/CloudPSS/IEEE3",
+  "evals": [
+    {
+      "id": 1,
+      "name": "真实EMT电能质量综合指标",
+      "goal": "验证能够从真实CloudPSS EMT job result读取电压波形并计算THD、暂降/暂升、三相不平衡、直流偏置和闪变代理指标",
+      "workflow": [
+        "Model.fetch or Model.load",
+        "runEMT",
+        "getPlots",
+        "getPlotChannelData",
+        "analyze_power_quality"
+      ],
+      "pass_criteria": [
+        "EMT仿真成功",
+        "至少分析三个电压通道",
+        "summary包含THD、暂降/暂升、不平衡和违规数量",
+        "三相组包含RMS不平衡和序分量不平衡结果"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "电能质量产物导出",
+      "goal": "验证电能质量结果能够导出为JSON、CSV、谐波CSV和Markdown报告",
+      "workflow": [
+        "write_summary_json",
+        "write_indicator_csv",
+        "write_harmonic_csv",
+        "write_markdown_report"
+      ],
+      "pass_criteria": [
+        "导出文件存在且非空",
+        "CSV包含指标、通道、数值、限值和状态字段",
+        "输出中不包含凭据值"
+      ]
+    }
+  ]
+}
