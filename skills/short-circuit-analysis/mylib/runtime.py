@@ -104,6 +104,7 @@ def _plot_name(plot: dict[str, Any], index: int) -> str:
 def _resolve_config(config: dict[str, Any] | None) -> dict[str, Any]:
     config = config or {}
     analysis = config.get("analysis", {})
+    thevenin = config.get("thevenin", analysis.get("thevenin", {}))
     channels = config.get("channels", {})
     output = config.get("output", {})
     return {
@@ -118,6 +119,19 @@ def _resolve_config(config: dict[str, Any] | None) -> dict[str, Any]:
         "postfault_window": analysis.get("postfault_window"),
         "min_samples": int(analysis.get("min_samples", 128)),
         "auto_max_channels": int(channels.get("auto_max_channels", 3)),
+        "thevenin": {
+            "enabled": bool(thevenin.get("enabled", analysis.get("enable_thevenin", True))),
+            "system_base_mva": float(thevenin.get("system_base_mva", analysis.get("system_base_mva", 100.0))),
+            "plant_rating_mva": _optional_float(
+                thevenin.get("plant_rating_mva", thevenin.get("rating_mva", analysis.get("plant_rating_mva")))
+            ),
+            "reactive_compensation_mvar": _optional_float(
+                thevenin.get("reactive_compensation_mvar", thevenin.get("shunt_compensation_mvar", 0.0))
+            ),
+            "xr_ratio": _optional_float(thevenin.get("xr_ratio", analysis.get("xr_ratio"))),
+            "weak_scr_threshold": float(thevenin.get("weak_scr_threshold", 2.0)),
+            "strong_scr_threshold": float(thevenin.get("strong_scr_threshold", 3.0)),
+        },
         "channels": {
             "current": list(channels.get("current", [])),
             "voltage": list(channels.get("voltage", [])),
@@ -128,6 +142,12 @@ def _resolve_config(config: dict[str, Any] | None) -> dict[str, Any]:
         "equivalent_pairs": list(channels.get("equivalent_pairs", [])),
         "output": output,
     }
+
+
+def _optional_float(value: Any) -> float | None:
+    if value is None or value == "":
+        return None
+    return float(value)
 
 
 def _find_trace(result, channel_name: str) -> tuple[int, str, dict[str, list[float]]]:
@@ -265,6 +285,96 @@ def _default_windows(x_values: list[float]) -> dict[str, tuple[float, float]]:
 
 def _short_circuit_mva(current_rms: float, base_voltage_kv: float) -> float:
     return math.sqrt(3.0) * base_voltage_kv * abs(current_rms)
+
+
+def _grid_strength(scr: float | None, weak_threshold: float, strong_threshold: float) -> str:
+    if scr is None:
+        return "not_assessed"
+    if scr < weak_threshold:
+        return "weak"
+    if scr < strong_threshold:
+        return "medium"
+    return "strong"
+
+
+def _grid_strength_note(strength: str) -> str:
+    notes = {
+        "strong": "Short-circuit strength is above the configured strong-grid threshold.",
+        "medium": "Short-circuit strength is in the intermediate range; voltage/reactive support and controls should be reviewed.",
+        "weak": "Short-circuit strength is below the configured weak-grid threshold; detailed IBR/control interaction studies are recommended.",
+        "not_assessed": "Plant rating was not provided, so SCR/ESCR was not assessed.",
+    }
+    return notes.get(strength, "Unknown grid-strength classification.")
+
+
+def _thevenin_from_short_circuit(
+    *,
+    short_circuit_mva: float,
+    base_voltage_kv: float,
+    system_base_mva: float,
+    plant_rating_mva: float | None,
+    reactive_compensation_mvar: float | None,
+    xr_ratio: float | None,
+    weak_scr_threshold: float,
+    strong_scr_threshold: float,
+) -> dict[str, Any]:
+    if short_circuit_mva <= 0:
+        raise ValueError("short_circuit_mva must be positive to compute Thevenin equivalent")
+    if base_voltage_kv <= 0:
+        raise ValueError("base_voltage_kv must be positive to compute Thevenin equivalent")
+    if system_base_mva <= 0:
+        raise ValueError("system_base_mva must be positive to compute Thevenin equivalent")
+
+    z_base_ohm = base_voltage_kv * base_voltage_kv / system_base_mva
+    z_th_ohm_mag = base_voltage_kv * base_voltage_kv / short_circuit_mva
+    z_th_pu_mag = system_base_mva / short_circuit_mva
+    z_ohm: dict[str, Any] = {
+        "magnitude": z_th_ohm_mag,
+        "real": None,
+        "imag": None,
+        "xr_ratio": xr_ratio,
+    }
+    z_pu: dict[str, Any] = {
+        "magnitude": z_th_pu_mag,
+        "real": None,
+        "imag": None,
+        "xr_ratio": xr_ratio,
+    }
+    if xr_ratio is not None and xr_ratio > 0:
+        r_ohm = z_th_ohm_mag / math.sqrt(1.0 + xr_ratio * xr_ratio)
+        x_ohm = r_ohm * xr_ratio
+        r_pu = z_th_pu_mag / math.sqrt(1.0 + xr_ratio * xr_ratio)
+        x_pu = r_pu * xr_ratio
+        z_ohm.update({"real": r_ohm, "imag": x_ohm})
+        z_pu.update({"real": r_pu, "imag": x_pu})
+
+    scr = None
+    escr = None
+    q_comp = reactive_compensation_mvar if reactive_compensation_mvar is not None else 0.0
+    if plant_rating_mva is not None and plant_rating_mva > 0:
+        scr = short_circuit_mva / plant_rating_mva
+        escr = (short_circuit_mva - q_comp) / plant_rating_mva
+
+    strength_basis = escr if escr is not None else scr
+    strength = _grid_strength(strength_basis, weak_scr_threshold, strong_scr_threshold)
+    return {
+        "method": "derived_from_short_circuit_capacity",
+        "formula": "Zth=Vll^2/Ssc; SCR=Ssc/Srated; ESCR=(Ssc-Qcomp)/Srated",
+        "base_voltage_kv": base_voltage_kv,
+        "system_base_mva": system_base_mva,
+        "z_base_ohm": z_base_ohm,
+        "z_th_ohm": z_ohm,
+        "z_th_pu": z_pu,
+        "short_circuit_capacity_mva": short_circuit_mva,
+        "plant_rating_mva": plant_rating_mva,
+        "reactive_compensation_mvar": q_comp,
+        "scr": scr,
+        "escr": escr,
+        "weak_scr_threshold": weak_scr_threshold,
+        "strong_scr_threshold": strong_scr_threshold,
+        "grid_strength": strength,
+        "assessment": _grid_strength_note(strength),
+    }
 
 
 def analyze_short_circuit_trace(
@@ -422,10 +532,18 @@ def _write_artifacts(result_data: dict[str, Any], output_dir: Path, prefix: str,
                 "postfault_rms_current",
                 "short_circuit_mva",
                 "fault_to_prefault_rms_ratio",
+                "z_th_pu_magnitude",
+                "z_th_ohm_magnitude",
+                "scr",
+                "escr",
+                "grid_strength",
             ]
         )
         for row in result_data["channels"]:
             analysis = row["analysis"]
+            thevenin = analysis.get("thevenin", {})
+            z_pu = thevenin.get("z_th_pu", {}) if thevenin else {}
+            z_ohm = thevenin.get("z_th_ohm", {}) if thevenin else {}
             writer.writerow(
                 [
                     row["kind"],
@@ -439,6 +557,11 @@ def _write_artifacts(result_data: dict[str, Any], output_dir: Path, prefix: str,
                     f"{analysis['postfault_rms_current']:.9g}",
                     f"{analysis['short_circuit_mva']:.9g}",
                     "" if analysis["fault_to_prefault_rms_ratio"] is None else f"{analysis['fault_to_prefault_rms_ratio']:.9g}",
+                    "" if not z_pu else f"{z_pu['magnitude']:.9g}",
+                    "" if not z_ohm else f"{z_ohm['magnitude']:.9g}",
+                    "" if thevenin.get("scr") is None else f"{thevenin['scr']:.9g}",
+                    "" if thevenin.get("escr") is None else f"{thevenin['escr']:.9g}",
+                    thevenin.get("grid_strength", ""),
                 ]
             )
 
@@ -454,10 +577,22 @@ def _write_artifacts(result_data: dict[str, Any], output_dir: Path, prefix: str,
             f"- Max fault RMS current: `{result_data['summary']['max_fault_rms_current']:.6f}`",
             f"- Max short-circuit capacity: `{result_data['summary']['max_short_circuit_mva']:.6f} MVA`",
             f"- Estimation methods: `{', '.join(result_data['summary']['methods'])}`",
-            "",
-            "| kind | channel | method | peak | fault RMS | prefault RMS | postfault RMS | Ssc MVA |",
-            "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |",
         ]
+        if result_data.get("thevenin", {}).get("enabled"):
+            lines.extend(
+                [
+                    f"- Minimum SCR: `{_format_optional(result_data['thevenin']['summary'].get('min_scr'))}`",
+                    f"- Minimum ESCR: `{_format_optional(result_data['thevenin']['summary'].get('min_escr'))}`",
+                    f"- Worst grid strength: `{result_data['thevenin']['summary'].get('worst_grid_strength', 'not_assessed')}`",
+                ]
+            )
+        lines.extend(
+            [
+                "",
+                "| kind | channel | method | peak | fault RMS | prefault RMS | postfault RMS | Ssc MVA |",
+                "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |",
+            ]
+        )
         for row in result_data["channels"]:
             analysis = row["analysis"]
             lines.append(
@@ -466,6 +601,26 @@ def _write_artifacts(result_data: dict[str, Any], output_dir: Path, prefix: str,
                 f"{analysis['prefault_rms_current']:.6f} | {analysis['postfault_rms_current']:.6f} | "
                 f"{analysis['short_circuit_mva']:.6f} |"
             )
+        if result_data.get("thevenin", {}).get("enabled"):
+            lines.extend(
+                [
+                    "",
+                    "## Thevenin Equivalent and SCR",
+                    "",
+                    "| channel | Zth pu | Zth ohm | SCR | ESCR | grid strength |",
+                    "| --- | ---: | ---: | ---: | ---: | --- |",
+                ]
+            )
+            for row in result_data["channels"]:
+                thevenin = row["analysis"].get("thevenin")
+                if not thevenin:
+                    continue
+                lines.append(
+                    f"| `{row['channel']}` | {thevenin['z_th_pu']['magnitude']:.6f} | "
+                    f"{thevenin['z_th_ohm']['magnitude']:.6f} | "
+                    f"{_format_optional(thevenin.get('scr'))} | {_format_optional(thevenin.get('escr'))} | "
+                    f"{thevenin['grid_strength']} |"
+                )
         markdown_path.write_text("\n".join(lines), encoding="utf-8")
     else:
         markdown_path = Path("")
@@ -474,6 +629,38 @@ def _write_artifacts(result_data: dict[str, Any], output_dir: Path, prefix: str,
         "json_path": str(json_path),
         "csv_path": str(csv_path),
         "markdown_path": str(markdown_path) if markdown_path else "",
+    }
+
+
+def _format_optional(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    if isinstance(value, float):
+        return f"{value:.6f}"
+    return str(value)
+
+
+def _summarize_thevenin(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    thevenin_rows = [row["analysis"]["thevenin"] for row in rows if row["analysis"].get("thevenin")]
+    if not thevenin_rows:
+        return {
+            "enabled": False,
+            "channel_count": 0,
+        }
+    scr_values = [row["scr"] for row in thevenin_rows if row.get("scr") is not None]
+    escr_values = [row["escr"] for row in thevenin_rows if row.get("escr") is not None]
+    strength_rank = {"weak": 0, "medium": 1, "strong": 2, "not_assessed": 3}
+    worst = min((row["grid_strength"] for row in thevenin_rows), key=lambda item: strength_rank.get(item, 99))
+    return {
+        "enabled": True,
+        "channel_count": len(thevenin_rows),
+        "min_z_th_pu_magnitude": min(row["z_th_pu"]["magnitude"] for row in thevenin_rows),
+        "max_z_th_pu_magnitude": max(row["z_th_pu"]["magnitude"] for row in thevenin_rows),
+        "min_z_th_ohm_magnitude": min(row["z_th_ohm"]["magnitude"] for row in thevenin_rows),
+        "max_z_th_ohm_magnitude": max(row["z_th_ohm"]["magnitude"] for row in thevenin_rows),
+        "min_scr": min(scr_values) if scr_values else None,
+        "min_escr": min(escr_values) if escr_values else None,
+        "worst_grid_strength": worst,
     }
 
 
@@ -550,9 +737,23 @@ def run_short_circuit_analysis(model, config: dict[str, Any] | None = None, *, o
     if not rows:
         raise RuntimeError("No channels analyzed")
 
+    if resolved["thevenin"]["enabled"]:
+        for row in rows:
+            row["analysis"]["thevenin"] = _thevenin_from_short_circuit(
+                short_circuit_mva=row["analysis"]["short_circuit_mva"],
+                base_voltage_kv=resolved["base_voltage_kv"],
+                system_base_mva=resolved["thevenin"]["system_base_mva"],
+                plant_rating_mva=resolved["thevenin"]["plant_rating_mva"],
+                reactive_compensation_mvar=resolved["thevenin"]["reactive_compensation_mvar"],
+                xr_ratio=resolved["thevenin"]["xr_ratio"],
+                weak_scr_threshold=resolved["thevenin"]["weak_scr_threshold"],
+                strong_scr_threshold=resolved["thevenin"]["strong_scr_threshold"],
+            )
+
     max_peak = max(row["analysis"]["peak_current"] for row in rows)
     max_fault_rms = max(row["analysis"]["fault_rms_current"] for row in rows)
     max_scc = max(row["analysis"]["short_circuit_mva"] for row in rows)
+    thevenin_summary = _summarize_thevenin(rows) if resolved["thevenin"]["enabled"] else {"enabled": False, "channel_count": 0}
     result_data = {
         "model": getattr(model, "name", ""),
         "model_rid": getattr(model, "rid", ""),
@@ -568,11 +769,19 @@ def run_short_circuit_analysis(model, config: dict[str, Any] | None = None, *, o
             "postfault_window": resolved["postfault_window"],
             "min_samples": resolved["min_samples"],
         },
+        "thevenin": {
+            "enabled": resolved["thevenin"]["enabled"],
+            "input": resolved["thevenin"],
+            "summary": thevenin_summary,
+        },
         "summary": {
             "channel_count": len(rows),
             "max_peak_current": max_peak,
             "max_fault_rms_current": max_fault_rms,
             "max_short_circuit_mva": max_scc,
+            "min_scr": thevenin_summary.get("min_scr"),
+            "min_escr": thevenin_summary.get("min_escr"),
+            "worst_grid_strength": thevenin_summary.get("worst_grid_strength"),
             "methods": sorted({row["analysis"]["method"] for row in rows}),
         },
         "channels": rows,

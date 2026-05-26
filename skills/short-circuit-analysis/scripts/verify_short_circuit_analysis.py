@@ -29,6 +29,15 @@ def main() -> None:
             "postfault_window": [9.0, 10.0],
             "min_samples": 128,
         },
+        "thevenin": {
+            "enabled": True,
+            "system_base_mva": 100.0,
+            "plant_rating_mva": 1.0,
+            "reactive_compensation_mvar": 0.0,
+            "xr_ratio": 10.0,
+            "weak_scr_threshold": 2.0,
+            "strong_scr_threshold": 3.0,
+        },
         "channels": {
             "equivalent_pairs": [
                 {"power": "#P1:0", "voltage": "vac:0"},
@@ -64,6 +73,19 @@ def main() -> None:
             raise RuntimeError(f"Insufficient samples for {row['channel']}")
         if analysis["short_circuit_mva"] <= 0:
             raise RuntimeError(f"Non-positive short-circuit capacity for {row['channel']}")
+        thevenin = analysis.get("thevenin")
+        if not thevenin:
+            raise RuntimeError(f"Missing Thevenin/SCR result for {row['channel']}")
+        if thevenin["z_th_pu"]["magnitude"] <= 0 or thevenin["z_th_ohm"]["magnitude"] <= 0:
+            raise RuntimeError(f"Invalid Thevenin impedance for {row['channel']}: {thevenin}")
+        if thevenin.get("scr") is None or thevenin["scr"] <= 0:
+            raise RuntimeError(f"Invalid SCR for {row['channel']}: {thevenin}")
+        if thevenin.get("grid_strength") not in {"weak", "medium", "strong"}:
+            raise RuntimeError(f"Unexpected grid strength for {row['channel']}: {thevenin}")
+    if not result.get("thevenin", {}).get("summary", {}).get("enabled"):
+        raise RuntimeError("Missing Thevenin summary")
+    if result["summary"].get("min_scr") is None or result["summary"]["min_scr"] <= 0:
+        raise RuntimeError(f"Missing min SCR summary: {result['summary']}")
     for key in ["json_path", "csv_path", "markdown_path"]:
         path = Path(result["artifacts"][key])
         if not path.exists() or path.stat().st_size <= 0:
